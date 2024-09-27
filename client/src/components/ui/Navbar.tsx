@@ -36,19 +36,17 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="flex justify-between items-center p-4 md:px-8">
+    <nav className="flex justify-between items-center p-4 md:px-8
+    sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-[1px] h-[75px]">
       <div className="text-2xl font-bold text-primary flex items-center gap-1">
-        <div className="border-white border-2 rounded-full">
         <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 32 32">
-          <circle cx="16" cy="16" r="15" fill="black" />
+          <circle cx="16" cy="16" r="15" fill="#e11d48" />
           <circle cx="16" cy="16" r="8" fill="none" stroke="white" stroke-width="2" />
           <circle cx="16" cy="7" r="3" fill="white" />
           <circle cx="23.5" cy="20.5" r="3" fill="white" />
           <circle cx="8.5" cy="20.5" r="3" fill="white" />
           <path d="M14 16L16 18L20 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        </div>
-     
+        </svg>   
         DecentraVerify</div>
       <div className="hidden md:flex items-center text-lg space-x-4">
         {navItems.map((item) => (
@@ -57,7 +55,7 @@ const Navbar = () => {
           </NavLink>
         ))}
         <ModeToggle />
-        <Button className='shadow-custom text-[16px] p-4 py-5 '>Get Started</Button>
+        <Button className='text-[16px] bg-primary p-4 py-5 '>Get Started</Button>
       </div>
       <div className="flex items-center md:hidden">
         <ModeToggle />
