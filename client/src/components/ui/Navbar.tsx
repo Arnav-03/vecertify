@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { Award, Menu } from 'lucide-react'
+import {  Menu } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "./ModeToggle"
 import { usePathname } from 'next/navigation'

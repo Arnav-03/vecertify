@@ -3,7 +3,6 @@ import { Shield, FileCheck, Database, Cpu, Lock, CheckCircle } from 'lucide-reac
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import blockchain from '../../public/blockchain.png';
-import Loading from './loading';
 
 interface FeatureCardProps {
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
