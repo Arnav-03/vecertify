@@ -10,7 +10,7 @@ interface FeatureCardProps {
   description: string;
 }
 interface ProcessStepProps {
-  number: number; // Specify that number should be of type number
+  number: number;
   title: string;
   description: string;
 }
@@ -36,17 +36,17 @@ const ProcessStep: React.FC<ProcessStepProps> = ({ number, title, description })
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-16 w-full mt-8">
       <header className="text-center md:text-start  flex flex-col md:flex-row  gap-4">
         <div className="w-full flex flex-col justify-center md:justify-start items-center md:items-start ">
-        <div className="text-5xl text-primary font-bold my-4 flex items-center justify-center md:justify-start gap-4">
+        <div className=" text-4xl lg:text-5xl text-primary font-bold  flex items-center justify-center md:justify-start gap-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 32 32">
               <circle cx="16" cy="16" r="15" fill="#e11d48" />
-              <circle cx="16" cy="16" r="8" fill="none" stroke="white" stroke-width="2" />
+              <circle cx="16" cy="16" r="8" fill="none" stroke="white" strokeWidth="2" />
               <circle cx="16" cy="7" r="3" fill="white" />
               <circle cx="23.5" cy="20.5" r="3" fill="white" />
               <circle cx="8.5" cy="20.5" r="3" fill="white" />
-              <path d="M14 16L16 18L20 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M14 16L16 18L20 14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           DecentraVerify</div>
         <h1 className="text-3xl  font-bold mb-4">Secure Document Verification Powered by Blockchain</h1>
@@ -57,7 +57,7 @@ const LandingPage: React.FC = () => {
         </div>
    
         <div className="w-full flex items-center justify-center">
-        <Image src={blockchain} alt='blockchain' height={300} />
+        <Image src={blockchain} alt='blockchain' height={300} priority/>
         </div>
       </header>
 
