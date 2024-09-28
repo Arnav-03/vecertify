@@ -3,6 +3,7 @@ import { Shield, FileCheck, Database, Cpu, Lock, CheckCircle } from 'lucide-reac
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import blockchain from '../../public/blockchain.png';
+import Footer from '@/components/ui/Footer';
 
 interface FeatureCardProps {
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -36,7 +37,7 @@ const ProcessStep: React.FC<ProcessStepProps> = ({ number, title, description })
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-16 w-full mt-8 border-t-2 ">
+    <div className="container mx-auto px-4 pt-16 pb-4 w-full mt-8 border-t-2 ">
       <header className="text-center md:text-start  flex flex-col md:flex-row  gap-4 mt-10">
         <div className="w-full flex flex-col justify-center md:justify-start items-center md:items-start ">
         <div className=" text-4xl lg:text-5xl text-primary font-bold  flex items-center justify-center md:justify-start gap-4 my-4">
@@ -137,13 +138,14 @@ const LandingPage: React.FC = () => {
       
         </div>
       </section>
-      <section className="text-center ">
+      <section className="text-center mb-10 ">
         <h2 className="text-3xl font-semibold mb-4">Ready to Transform Document Verification?</h2>
         <p className="text-xl text-muted-foreground mb-8">
           Join DecentraVerify today and experience the future of secure, efficient credential verification.
         </p>
         <Button size="lg" className="text-lg px-8 py-6">Start Verifying Now</Button>
       </section>
+      <Footer/>
     </div>
   );
 };
