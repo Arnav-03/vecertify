@@ -36,10 +36,10 @@ const ProcessStep: React.FC<ProcessStepProps> = ({ number, title, description })
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-16 w-full mt-8">
-      <header className="text-center md:text-start  flex flex-col md:flex-row  gap-4">
+    <div className="container mx-auto px-4 py-16 w-full mt-8 border-t-2 ">
+      <header className="text-center md:text-start  flex flex-col md:flex-row  gap-4 mt-10">
         <div className="w-full flex flex-col justify-center md:justify-start items-center md:items-start ">
-        <div className=" text-4xl lg:text-5xl text-primary font-bold  flex items-center justify-center md:justify-start gap-4">
+        <div className=" text-4xl lg:text-5xl text-primary font-bold  flex items-center justify-center md:justify-start gap-4 my-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 32 32">
               <circle cx="16" cy="16" r="15" fill="#e11d48" />
               <circle cx="16" cy="16" r="8" fill="none" stroke="white" strokeWidth="2" />
