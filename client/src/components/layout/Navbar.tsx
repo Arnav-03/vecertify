@@ -2,15 +2,17 @@
 import React, { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from "./ModeToggle"
+import { ModeToggle } from "../ui/ModeToggle"
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [menuHeight, setMenuHeight] = useState('0px')
   const pathname = usePathname()
-
+  const navigate=useRouter();
   const navItems = [
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
@@ -71,7 +73,7 @@ const Navbar = () => {
           </div>
           <div className="gap-2 items-center hidden md:flex">
             <ModeToggle />
-            <Button className='text-[16px] bg-primary p-4 py-5'>Get Started</Button>
+            <Button onClick={()=>{navigate.push('/login')}}  className='text-[16px] bg-primary p-4 py-5'>Get Started</Button>
           </div>
           <div className="flex items-center md:hidden">
             <ModeToggle />

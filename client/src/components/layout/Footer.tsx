@@ -6,7 +6,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-background text-foreground">
+    <footer className="bg-background text-foreground p-4">
       <div className="max-w-7xl mx-auto px-0 pt-12 py-6 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo and description */}
@@ -47,17 +47,17 @@ const Footer = () => {
                 arnavarora0003@gmail.com
               </a>
             </div>
+            <div className="flex space-x-6 my-4 md:mb-0">
+              <a href="#" className="hover:text-primary transition-colors"><Facebook size={20} /></a>
+              <a href="#" className="hover:text-primary transition-colors"><Twitter size={20} /></a>
+              <a href="#" className="hover:text-primary transition-colors"><Instagram size={20} /></a>
+              <a href="#" className="hover:text-primary transition-colors"><Linkedin size={20} /></a>
+            </div>
           </div>
         </div>
 
         {/* Bottom section with social icons and copyright */}
-        <div className="mt-8 pt-8  border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex space-x-6 mb-4 md:mb-0">
-            <a href="#" className="hover:text-primary transition-colors"><Facebook size={20} /></a>
-            <a href="#" className="hover:text-primary transition-colors"><Twitter size={20} /></a>
-            <a href="#" className="hover:text-primary transition-colors"><Instagram size={20} /></a>
-            <a href="#" className="hover:text-primary transition-colors"><Linkedin size={20} /></a>
-          </div>
+        <div className="mt-8 pt-8  border-t border-gray-700 flex flex-col md:flex-row justify-center items-center">
           <div className="text-sm">
             © {currentYear} DecentraVerify. All rights reserved.
           </div>
