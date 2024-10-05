@@ -9,7 +9,7 @@ export interface AppwriteUser {
     phoneVerification: boolean;
     status: boolean;
     labels: string[];
-    prefs: Record<string, any>;
+    prefs: Record<string, unknown>;
     accessedAt: string;
     registration: string;
   }
