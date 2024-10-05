@@ -48,7 +48,7 @@ export default function ContactPage() {
                         <div className="shadow-custom">
                             <Card>
                                 <CardContent className="p-6">
-                                    <h2 className="text-2xl font-semibold mb-4">Let's Connect</h2>
+                                    <h2 className="text-2xl font-semibold mb-4">Let&apos;s Connect</h2>
                                     <div className="space-y-4">
                                         {/* Email */}
                                         <a href="mailto:arnavarora0003@gmail.com"
