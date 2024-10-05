@@ -113,7 +113,7 @@ body {
     content: "";
     position: absolute;
     border-radius: 50px;
-    box-shadow: 0 0 0 3px inset #bb08d3;
+    box-shadow: 0 0 0 3px inset #db234c;
     animation: l4 2.5s infinite;
   }
   .loader:after {

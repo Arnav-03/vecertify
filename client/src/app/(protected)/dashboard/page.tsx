@@ -36,9 +36,9 @@ export default function Dashboard() {
     <Layout>
       <div className="min-h-[100dvh] p-6 mt-[75px] p-4">
 
-        <div className="mb-8 bg-primary p-4 shadow-custom flex items-start justify-between rounded-lg ">
+        <div className="mb-8 bg-primary p-4 py-6  flex items-start justify-between rounded-lg ">
           <div className="flex flex-col">
-            <div className="flex flex-col md:flex-row  font-bold text-gray-800 dark:text-white text-xl lg:text-3xl font-bold text-gray-800 dark:text-white">
+            <div className="flex flex-col md:flex-row  font-bold  text-xl lg:text-3xl font-bold text-primary-foreground">
               <div className="mr-2">Welcome,
               </div>
               <div className="">
@@ -48,7 +48,7 @@ export default function Dashboard() {
               <Mail className="h-6 w-6" /> {user?.email}
             </p>
           </div>
-          <div className="flex items-center gap-2 font-bold text-lg lg:text-3xl">
+          <div className="flex items-center gap-2 text-primary-foreground font-bold text-lg lg:text-3xl">
             <GraduationCap className='h-10 w-10 lg:h-16 lg:w-16 text-yellow-500' />
             Student</div>
         </div>

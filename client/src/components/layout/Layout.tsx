@@ -4,6 +4,7 @@ import { ReactNode, useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import NavbarLogin from "./NavbarLogin";
 import Footer from "./Footer";
+import { useUser } from "@/hooks/useUser";
 
 const Layout = ({
   className,
@@ -13,20 +14,12 @@ const Layout = ({
   children: ReactNode;
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-   useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const response = await fetch("/api/auth/status");
-        const { isLoggedIn } = await response.json();
-        setIsLoggedIn(isLoggedIn);
-      } catch (error) {
-        console.error("Error checking login status:", error);
+  const {user}=useUser();
+  useEffect(() => { 
+      if(user){
+        setIsLoggedIn(true);
       }
-    };
-
-    checkLoginStatus();
-  }, []); 
+  },[user]);
 
   return (
     <div
