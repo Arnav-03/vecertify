@@ -3,14 +3,14 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { GraduationCap, Mail } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
-import { useRouter } from 'next/navigation';
-import { useUser } from '@/hooks/useUser';
+/* import { useRouter } from 'next/navigation';
+ */import { useUser } from '@/hooks/useUser';
 
 
 export default function Dashboard() {
   const { user, loading } = useUser();
-  const router = useRouter();
-
+/*   const router = useRouter();
+ */
   if (loading) {
     return (
       <Layout>
