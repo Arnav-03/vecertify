@@ -100,3 +100,14 @@ export async function loginWithEmail(formData: FormData) {
         return { success: false, error: "Invalid email or password" };
     }
 }
+export async function logout() {
+    try {
+        const { account } = await createSessionClient();
+        await account.deleteSession('current'); 
+        cookies().delete('blockchain');
+        return { success: true, message: 'Logged out successfully' };
+    } catch (error) {
+        console.error('Error during logout:', error);
+        return { success: false, error: 'Error during logout' };
+    }
+}

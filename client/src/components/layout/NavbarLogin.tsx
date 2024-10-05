@@ -6,6 +6,8 @@ import { ModeToggle } from "../ui/ModeToggle";
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { logout } from '@/lib/appwrite';
+import { toast } from 'sonner';
 
 const NavbarLogin = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,14 +55,25 @@ const NavbarLogin = () => {
     );
   };
   const handleSignOut = async () => {
-    try {
+   /*  try {
       const response = await fetch("/api/auth/signout", { method: "POST" });
       if (response.ok) {
         navigate.push("/login");
       }
     } catch (error) {
       console.error("Error signing out:", error);
-    }
+    } */
+      try {
+        const response=await logout();
+        if (response.success) {
+          navigate.push("/login");
+          toast.success("Signed out successfully")
+        }else{
+          toast.error("Error signing out")
+        }
+      } catch (error) {
+        console.error("Error signing out:", error);
+      }
   };
 
   return (
