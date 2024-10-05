@@ -6,7 +6,6 @@ import { ModeToggle } from "../ui/ModeToggle"
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)

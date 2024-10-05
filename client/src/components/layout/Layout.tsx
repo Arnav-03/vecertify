@@ -14,7 +14,7 @@ const Layout = ({
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-/*   useEffect(() => {
+   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const response = await fetch("/api/auth/status");
@@ -26,7 +26,7 @@ const Layout = ({
     };
 
     checkLoginStatus();
-  }, []); */
+  }, []); 
 
   return (
     <div

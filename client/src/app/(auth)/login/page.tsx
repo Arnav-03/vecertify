@@ -24,14 +24,17 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleInputChange = (e: { target: any; }) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } }
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    setError(''); 
+    setError('');
   };
+
 
   useEffect(() => {
     const checkUser = async () => {
@@ -51,7 +54,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -164,9 +167,9 @@ export default function LoginPage() {
                 </Button>
 
                 <div className="text-center text-sm text-muted-foreground">
-                  Don't have an account?{' '}
-                  <Link 
-                    href="/signup" 
+                  Don&apos;t have an account?{' '}
+                  <Link
+                    href="/signup"
                     className="text-primary hover:underline"
                   >
                     Sign up

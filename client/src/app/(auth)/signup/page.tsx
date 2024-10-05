@@ -13,7 +13,6 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: '',
@@ -22,7 +21,9 @@ export default function SignupForm() {
     role: '',
   });
 
-  const handleInputChange = (e: { target: any; }) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } }
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -32,8 +33,7 @@ export default function SignupForm() {
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    setIsLoading(true);
-    
+
     try {
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -41,7 +41,7 @@ export default function SignupForm() {
       });
 
       const result = await signUpWithEmail(formDataToSend);
-      
+
       if (result.success) {
         toast.success("Account created successfully", {
           description: "Welcome to Credify. Redirecting you to your dashboard...",
@@ -59,8 +59,6 @@ export default function SignupForm() {
       toast.error("Error creating account", {
         description: "Please check your information and try again. If the problem persists, contact support.",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
