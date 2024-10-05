@@ -41,10 +41,11 @@ export async function getLoggedInUser() {
     try {
         const { account } = await createSessionClient();
         return await account.get();
-    } catch (error) {
+    } catch {
         return null;
     }
 }
+
 
 export async function signUpWithEmail(formData: FormData) {
     const email = formData.get("email") as string;
