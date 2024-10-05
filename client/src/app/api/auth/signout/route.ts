@@ -7,8 +7,8 @@ export async function POST(req: NextRequest) {
     const { account } = await createSessionClient();
     await account.deleteSession('current');
     return NextResponse.json({ message: 'Signed out successfully' }, { status: 200 });
-  } catch  {
-    return NextResponse.json({ message: 'Error signing out' }, { status: 500 });
+  } catch(error)  {
+    return NextResponse.json({ message: error }, { status: 500 });
   }
 }
 
