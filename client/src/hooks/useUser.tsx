@@ -10,7 +10,7 @@ export const useUser = () => {
   const pathname = usePathname();
 
   // Define routes that do not require login
-  const publicRoutes = ['/', '/about','/contact', '/login', '/register'];
+  const publicRoutes = ['/', '/about','/contact', '/login', '/register','/signup','/details'];
 
   useEffect(() => {
     const fetchUser = async () => {

@@ -64,7 +64,7 @@ export default function LoginPage() {
       const result = await loginWithEmail(formDataToSend);
       if (result.success) {
         toast.success("Login successful", {
-          description: "Welcome back to DecentraVerify. Redirecting you to your dashboard...",
+          description: "Welcome back to DecentraVerify. Redirecting to dashboard...",
         });
         setTimeout(() => router.push("/dashboard"), 1000);
       } else {

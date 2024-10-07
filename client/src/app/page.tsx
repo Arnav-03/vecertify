@@ -1,9 +1,11 @@
+"use client"
 import React from 'react';
 import { Shield, FileCheck, Database, Cpu, Lock, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import blockchain from '../../public/blockchain.png';
 import Layout from '@/components/layout/Layout';
+import { useRouter } from 'next/navigation'
 
 interface FeatureCardProps {
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -36,6 +38,7 @@ const ProcessStep: React.FC<ProcessStepProps> = ({ number, title, description })
 );
 
 const LandingPage: React.FC = () => {
+  const navigate=useRouter();
   return (
     <Layout>
       <div className="container mx-auto px-4 pt-16 pb-4 w-full mt-8 border-t-2 min-h-[100dvh] ">
@@ -55,7 +58,7 @@ const LandingPage: React.FC = () => {
             <p className="text-xl text-muted-foreground mb-8">
               Instantly verify credentials and documents with our cutting-edge blockchain technology.
             </p>
-            <Button size="lg" className="text-lg bg-primary px-8 py-6 w-fit">Get Started</Button>
+            <Button onClick={() => { navigate.push('/login') }} size="lg" className="text-lg bg-primary px-8 py-6 w-fit">Get Started</Button>
           </div>
 
           <div className="w-full flex items-center justify-center">

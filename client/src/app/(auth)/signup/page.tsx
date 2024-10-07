@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 export default function SignupForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
     role: '',
@@ -35,25 +35,14 @@ export default function SignupForm() {
     e.preventDefault();
 
     try {
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
-      });
+      const result = await signUpWithEmail(formData);
 
-      const result = await signUpWithEmail(formDataToSend);
-
-      if (result.success) {
-        toast.success("Account created successfully", {
-          description: "Welcome to Credify. Redirecting you to your dashboard...",
-          action: {
-            label: "Dismiss",
-            onClick: () => console.log("Dismissed"),
-          },
-        });
-        setTimeout(() => router.push("/dashboard"), 1000);
-      } else {
+      if (result.success && result.otpSent) {
+        // Redirect to OTP verification page with userId
+        router.push(`/email-verify?userId=${result.userId}&role=${formData.role}`);
+    } else {
         throw new Error(result.error || "Failed to create account");
-      }
+    }
     } catch (error) {
       console.error("Signup error:", error);
       toast.error("Error creating account", {
@@ -61,6 +50,7 @@ export default function SignupForm() {
       });
     }
   };
+
 
   return (
     <Layout>
@@ -80,13 +70,13 @@ export default function SignupForm() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-2">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="name">Full Name</Label>
                   <Input
-                    id="fullName"
-                    name="fullName"
+                    id="name"
+                    name="name"
                     placeholder="John Doe"
                     required
-                    value={formData.fullName}
+                    value={formData.name}
                     onChange={handleInputChange}
                   />
                 </div>

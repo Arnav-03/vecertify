@@ -19,7 +19,6 @@ const NavbarLogin = () => {
     { name: 'dashboard', href: '/dashboard', icon: <LayoutDashboard /> },
     { name: 'Certifications', href: '/certifications', icon: <FileBadge /> },
     { name: 'Profile', href: '/profile', icon: <CircleUserRound /> },
-
   ];
 
   useEffect(() => {
@@ -55,14 +54,6 @@ const NavbarLogin = () => {
     );
   };
   const handleSignOut = async () => {
-   /*  try {
-      const response = await fetch("/api/auth/signout", { method: "POST" });
-      if (response.ok) {
-        navigate.push("/login");
-      }
-    } catch (error) {
-      console.error("Error signing out:", error);
-    } */
       try {
         const response=await logout();
         if (response.success) {
@@ -100,7 +91,7 @@ const NavbarLogin = () => {
           </div>
           <div className="gap-2 items-center hidden md:flex mr-12">
             <ModeToggle />
-            <LogOut className="h-6  w-6   text-primary" onClick={handleSignOut} />
+            <LogOut className="h-6  w-6 mx-4 cursor-pointer  text-primary" onClick={handleSignOut} />
           </div>
           <div className="flex items-center md:hidden">
             <ModeToggle />
