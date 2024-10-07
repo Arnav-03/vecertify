@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { toast } from "sonner"
 import { createStudentProfile } from "@/lib/appwrite"
 import { useRouter } from "next/navigation"
@@ -58,7 +57,7 @@ export default function StudentProfileForm() {
       } else {
         toast.error(result.error || "Failed to complete profile");
       }
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
   }
