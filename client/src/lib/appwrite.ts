@@ -183,3 +183,65 @@ export async function createStudentProfile(data: {
         return { success: false, error: "Error creating student profile" };
     }
 }
+
+export async function createAuthorityProfile(data: {
+    organizationName: string;
+    organizationType: string;
+    designation: string;
+    websiteUrl: string;
+    officialIdNumber: string;
+    organizationEmail: string;
+    organizationPhone: string;
+}) {
+    try {
+        // Fetch logged-in user's details
+        const loggedInUser = await getLoggedInUser();
+        if (!loggedInUser) {
+            return { success: false, error: "User not logged in" };
+        }
+
+        const { name, email } = loggedInUser;
+        console.log('User Info:', name, email);
+        console.log('Profile Data:', data);
+
+        // Initialize Appwrite client
+        const client = new Client()
+            .setEndpoint(process.env.APPWRITE_ENDPOINT!)
+            .setProject(process.env.APPWRITE_PROJECT_ID!);
+
+        const databases = new Databases(client);
+
+        // Check if a profile with the same authorityId already exists
+        const existingProfile = await databases.listDocuments(
+            process.env.APPWRITE_DATABASE_ID!,
+            process.env.AUTHORITY_COLLECTION_ID!,
+            [Query.equal('officialId', data.officialIdNumber)]
+        );
+
+        if (existingProfile.documents.length > 0) {
+            return { success: false, error: "Profile already exists for this authority" };
+        }
+
+        // Create the authority profile document
+        const response = await databases.createDocument(
+            process.env.APPWRITE_DATABASE_ID!,
+            process.env.AUTHORITY_COLLECTION_ID!,
+            ID.unique(),
+            {   
+                organizationName: data.organizationName,
+                organizationType: data.organizationType,
+                websiteUrl: data.websiteUrl,
+                officialId: data.officialIdNumber,
+                organizationEmail: data.organizationEmail,
+                organizationPhone: data.organizationPhone,
+                orgIssuerName: name,
+                orgIssuerEmail: email, 
+            }
+        );
+
+        return { success: true, response };
+    } catch (error) {
+        console.error("Error creating authority profile:", error);
+        return { success: false, error: "Error creating authority profile" };
+    }
+}

@@ -13,7 +13,11 @@ export default async function DashboardLayout({
   employer: React.ReactNode;
 }) {
   const user = await getLoggedInUser();
-  console.log(user?.labels?.[0]);
+
+  if (!user) {
+    return <div>Access Denied. Contact Support</div>;
+  }
+
   let dashboardContent;
   switch (user?.labels?.[0]) {
     case 'student':

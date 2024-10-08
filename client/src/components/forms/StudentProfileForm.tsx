@@ -49,7 +49,6 @@ export default function StudentProfileForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values);
       const result = await createStudentProfile(values); 
       if (result.success) {
         toast.success("Profile completed successfully");
