@@ -40,6 +40,7 @@ export default function EmployerProfileForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     toast.success("Employer profile completed successfully")
+    console.log(values);
   }
 
   return (
