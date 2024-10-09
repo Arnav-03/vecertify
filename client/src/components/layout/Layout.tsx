@@ -28,7 +28,7 @@ const Layout = ({
         className
       )}
     >
-      {isLoggedIn ? <NavbarLogin /> : <Navbar />}
+      {isLoggedIn ? <NavbarLogin userRole={user?.labels[0] || ""} /> : <Navbar />}
       {children}
       <Footer />
     </div>

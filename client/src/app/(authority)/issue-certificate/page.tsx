@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { toast } from "sonner"
-import { AlertCircle, CalendarIcon, FileText, Loader2, Upload } from 'lucide-react'
+import { AlertCircle, CalendarIcon, FileText, Loader2, Upload, X } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { format } from "date-fns"
@@ -20,19 +20,14 @@ import Layout from '@/components/layout/Layout'
 import NotAuthorized from '@/components/NotAuthorized'
 import { useUser } from '@/hooks/useUser'
 import { uploadPhoto } from '@/lib/FirebaseUpload'
+import { createIssuedCertificate } from '@/lib/appwrite'
 
-const MAX_FILE_SIZE = 5000000; // 5MB
+const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_FILE_TYPES = ["application/pdf"];
 
 const formSchema = z.object({
     studentRollNo: z.string().min(1, {
         message: "Student Roll No is required.",
-    }),
-    studentName: z.string().min(2, {
-        message: "Student name must be at least 2 characters.",
-    }),
-    courseName: z.string().min(1, {
-        message: "Course name is required.",
     }),
     issueDate: z.date({
         required_error: "Issue date is required.",
@@ -40,11 +35,11 @@ const formSchema = z.object({
     issuedBy: z.enum(["Dean", "Professor", "HOD", "Registrar"], {
         required_error: "Issuer role is required.",
     }),
-    certificateType: z.enum(["completion", "participation", "achievement"], {
-        required_error: "Certificate type is required.",
-    }),
     certificateId: z.string().min(1, {
         message: "Certificate ID is required.",
+    }),
+    courseName: z.string().min(1, {
+        message: "Course name is required.",
     }),
     certificateFile: z
         .instanceof(File)
@@ -56,7 +51,7 @@ const formSchema = z.object({
 })
 
 const FormSkeleton = () => (
-    <div className="container mx-auto px-4 py-8 mt-[75px]">
+    <div className="container mx-auto px-4 py-8 ">
         <Card className="max-w-2xl mx-auto bg-background shadow-custom">
             <CardHeader>
                 <Skeleton className="h-8 w-48" />
@@ -79,16 +74,15 @@ const FormSkeleton = () => (
 export default function IssueCertificate() {
     const { user, loading } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [selectedFileName, setSelectedFileName] = useState<string>("")
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            studentRollNo: "",
-            studentName: "",
             courseName: "",
             issueDate: new Date(),
+            studentRollNo: "",
             issuedBy: "Dean",
-            certificateType: "completion",
             certificateId: "",
         },
     })
@@ -98,11 +92,22 @@ export default function IssueCertificate() {
         try {
             const downloadURL = await uploadPhoto(values.certificateFile, values.certificateId, values.studentRollNo);
             console.log('File uploaded at:', downloadURL);
-            /*             const result= await createIssuedCertificate(values,downloadURL);
-             */
-            console.log({ ...values, fileUrl: downloadURL });
-            toast.success("Certificate Issued");
-            form.reset();
+            const result = await createIssuedCertificate({
+                courseName: values.courseName,
+                issueDate: values.issueDate.toLocaleDateString('en-CA'),
+                studentRollNo: values.studentRollNo,
+                issuedBy: values.issuedBy,
+                certificateId: values.certificateId,
+            }, downloadURL);
+            if (result.success) {
+                console.log({ ...values, fileUrl: downloadURL });
+                toast.success("Certificate Issued");
+                form.reset();
+                setSelectedFileName("");
+            } else {
+                toast.error("Failed to issue certificate");
+            }
+
             setIsSubmitting(false);
 
         } catch (error) {
@@ -110,6 +115,11 @@ export default function IssueCertificate() {
             toast.error("Failed to issue certificate");
             setIsSubmitting(false);
         }
+    }
+
+    const handleClearFile = () => {
+        form.setValue('certificateFile', undefined as any);
+        setSelectedFileName("");
     }
 
     return (
@@ -155,19 +165,7 @@ export default function IssueCertificate() {
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="studentName"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Student Name</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Enter student name" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+
                                     <FormField
                                         control={form.control}
                                         name="courseName"
@@ -244,44 +242,40 @@ export default function IssueCertificate() {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="certificateType"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Certificate Type</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select a certificate type" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="completion">Completion</SelectItem>
-                                                        <SelectItem value="participation">Participation</SelectItem>
-                                                        <SelectItem value="achievement">Achievement</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
                                         name="certificateFile"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Certificate PDF</FormLabel>
                                                 <FormControl>
-                                                    <div className="flex items-center gap-4">
-                                                        <Input
-                                                            type="file"
-                                                            accept=".pdf"
-                                                            onChange={(e) => {
-                                                                const file = e.target.files?.[0];
-                                                                field.onChange(file);
-                                                            }}
-                                                            className="cursor-pointer bg-accent"
-                                                        />
-                                                        <Upload className="h-4 w-4 text-muted-foreground" />
+                                                    <div className="flex flex-col gap-2">
+                                                        <div className="relative h-9">
+                                                            <Input
+                                                                type="file"
+                                                                accept=".pdf"
+                                                                onChange={(e) => {
+                                                                    const file = e.target.files?.[0];
+                                                                    if (file) {
+                                                                        field.onChange(file);
+                                                                        setSelectedFileName(file.name);
+                                                                    }
+                                                                }}
+                                                                className="cursor-pointer"
+                                                            />
+                                                        </div>
+                                                        {selectedFileName && (
+                                                            <div className="flex items-center justify-between bg-accent p-2 rounded">
+                                                                <span className="text-sm truncate">{selectedFileName}</span>
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    onClick={handleClearFile}
+                                                                    className="h-8 w-8 p-0"
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </FormControl>
                                                 <FormMessage />
@@ -291,7 +285,6 @@ export default function IssueCertificate() {
                                             </FormItem>
                                         )}
                                     />
-
                                     <Alert className='bg-secondary'>
                                         <AlertCircle className="h-4 w-4" />
                                         <AlertTitle>Important</AlertTitle>

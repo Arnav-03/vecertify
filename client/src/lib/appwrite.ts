@@ -139,9 +139,6 @@ export async function createStudentProfile(data: {
         }
 
         const { name, email } = loggedInUser;
-        console.log('User Info:', name, email);
-        console.log('Profile Data:', data);
-
         // Initialize Appwrite client
         const client = new Client()
             .setEndpoint(process.env.APPWRITE_ENDPOINT!)
@@ -201,8 +198,6 @@ export async function createAuthorityProfile(data: {
         }
 
         const { name, email } = loggedInUser;
-        console.log('User Info:', name, email);
-        console.log('Profile Data:', data);
 
         // Initialize Appwrite client
         const client = new Client()
@@ -246,13 +241,12 @@ export async function createAuthorityProfile(data: {
     }
 }
 
-/* export async function createIssuedCertificate(data: {
-    certificateName: string;
-    issuedTo: string;
+ export async function createIssuedCertificate(data: {
+    courseName: string;
     issueDate: string;
-    expirationDate: string;
-    certificateUrl: string;
-    certificateIdNumber: string;
+    studentRollNo:string;
+    issuedBy: string;
+    certificateId: string;
 }, fileUrl: string) {
     try {
         // Fetch logged-in user's details
@@ -261,9 +255,7 @@ export async function createAuthorityProfile(data: {
             return { success: false, error: "User not logged in" };
         }
 
-        const { name, email } = loggedInUser;
-        console.log('User Info:', name, email);
-        console.log('Certificate Data:', data);
+        const { name } = loggedInUser;
 
         // Initialize Appwrite client
         const client = new Client()
@@ -277,8 +269,8 @@ export async function createAuthorityProfile(data: {
             process.env.APPWRITE_DATABASE_ID!,
             process.env.ISSUED_CERTIFICATE_COLLECTION_ID!,
             [
-                Query.equal('certificateId', data.certificateIdNumber),
-                Query.equal('studentRollNo', data.)
+                Query.equal('certificateId', data.certificateId),
+                Query.equal('studentRollNo', data.studentRollNo)
             ]
         );
 
@@ -293,14 +285,13 @@ export async function createAuthorityProfile(data: {
             process.env.ISSUED_CERTIFICATE_COLLECTION_ID!,
             ID.unique(),
             {
-                certificateName: data.certificateName,
-                issuedTo: data.issuedTo,
+                studentRollNo: data.studentRollNo,
+                certificateId: data.certificateId,
+                certificateName: data.courseName,
                 issueDate: data.issueDate,
-                expirationDate: data.expirationDate,
+                issuerName: data.issuedBy,
                 certificateUrl: fileUrl,
-                certificateId: data.certificateIdNumber,
-                issuerName: name,
-                issuerEmail: email,
+                issuerOrg: name,
             }
         );
 
@@ -309,4 +300,4 @@ export async function createAuthorityProfile(data: {
         console.error("Error issuing certificate:", error);
         return { success: false, error: "Error issuing certificate" };
     }
-} */
+} 
