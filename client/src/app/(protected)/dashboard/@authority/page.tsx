@@ -6,9 +6,11 @@ import { useUser } from '@/hooks/useUser';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 
 export default function AuthorityDashboard() {
   const { user, loading } = useUser();
+  const navigate=useRouter();
 
   if (loading) {
     return (
@@ -48,12 +50,17 @@ export default function AuthorityDashboard() {
           Authority
         </div>
       </div>
+      <div className="w-full flex my-4 text-lg  items-center justify-end">
+        <Button onClick={()=>navigate.push('/issue-certificate')} size='lg' className="text-lg px-4">
+          <Plus className="mr-2 h-5 w-5" /> Issue Certificate
+        </Button>
+      </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Statistics Cards */}
         <Card className='shadow-custom bg-accent'>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Certificates</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <Activity className="h-8 w-8 text-yellow-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">1,234</div>
@@ -65,7 +72,7 @@ export default function AuthorityDashboard() {
         <Card className='shadow-custom bg-accent'>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Pending Certificates</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Clock className="h-8 w-8 text-yellow-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">23</div>
@@ -77,7 +84,7 @@ export default function AuthorityDashboard() {
         <Card className='shadow-custom bg-accent'>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Verified Certificates</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <CheckCircle className="h-8 w-8 text-yellow-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">892</div>
@@ -95,7 +102,7 @@ export default function AuthorityDashboard() {
           <CardContent>
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">Create and issue new certificates to students or professionals.</p>
-              <Button className="w-full">
+              <Button onClick={()=>navigate.push('/issue-certificate')} className="w-full">
                 <Plus className="mr-2 h-4 w-4" /> Issue Certificate
               </Button>
             </div>

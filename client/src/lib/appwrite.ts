@@ -165,7 +165,7 @@ export async function createStudentProfile(data: {
             process.env.APPWRITE_DATABASE_ID!,
             process.env.STUDENT_COLLECTION_ID!,
             ID.unique(),
-            {   
+            {
                 studentId: loggedInUser.$id,
                 college: data.collegeName,
                 rollno: data.rollno,
@@ -173,7 +173,7 @@ export async function createStudentProfile(data: {
                 major: data.branchName,
                 gradYear: data.gradYear,
                 name: name,
-                email: email, 
+                email: email,
             }
         );
 
@@ -227,7 +227,7 @@ export async function createAuthorityProfile(data: {
             process.env.APPWRITE_DATABASE_ID!,
             process.env.AUTHORITY_COLLECTION_ID!,
             ID.unique(),
-            {   
+            {
                 organizationName: data.organizationName,
                 organizationType: data.organizationType,
                 websiteUrl: data.websiteUrl,
@@ -235,7 +235,7 @@ export async function createAuthorityProfile(data: {
                 organizationEmail: data.organizationEmail,
                 organizationPhone: data.organizationPhone,
                 orgIssuerName: name,
-                orgIssuerEmail: email, 
+                orgIssuerEmail: email,
             }
         );
 
@@ -245,3 +245,68 @@ export async function createAuthorityProfile(data: {
         return { success: false, error: "Error creating authority profile" };
     }
 }
+
+/* export async function createIssuedCertificate(data: {
+    certificateName: string;
+    issuedTo: string;
+    issueDate: string;
+    expirationDate: string;
+    certificateUrl: string;
+    certificateIdNumber: string;
+}, fileUrl: string) {
+    try {
+        // Fetch logged-in user's details
+        const loggedInUser = await getLoggedInUser();
+        if (!loggedInUser) {
+            return { success: false, error: "User not logged in" };
+        }
+
+        const { name, email } = loggedInUser;
+        console.log('User Info:', name, email);
+        console.log('Certificate Data:', data);
+
+        // Initialize Appwrite client
+        const client = new Client()
+            .setEndpoint(process.env.APPWRITE_ENDPOINT!)
+            .setProject(process.env.APPWRITE_PROJECT_ID!);
+
+        const databases = new Databases(client);
+
+        // Check if a certificate with the same certificateIdNumber and studentRollNo already exists
+        const existingCertificate = await databases.listDocuments(
+            process.env.APPWRITE_DATABASE_ID!,
+            process.env.ISSUED_CERTIFICATE_COLLECTION_ID!,
+            [
+                Query.equal('certificateId', data.certificateIdNumber),
+                Query.equal('studentRollNo', data.)
+            ]
+        );
+
+        // If a matching certificate exists, return an error
+        if (existingCertificate.documents.length > 0) {
+            return { success: false, error: "A certificate with this ID for the same student already exists" };
+        }
+
+        // Create the issued certificate document
+        const response = await databases.createDocument(
+            process.env.APPWRITE_DATABASE_ID!,
+            process.env.ISSUED_CERTIFICATE_COLLECTION_ID!,
+            ID.unique(),
+            {
+                certificateName: data.certificateName,
+                issuedTo: data.issuedTo,
+                issueDate: data.issueDate,
+                expirationDate: data.expirationDate,
+                certificateUrl: fileUrl,
+                certificateId: data.certificateIdNumber,
+                issuerName: name,
+                issuerEmail: email,
+            }
+        );
+
+        return { success: true, response };
+    } catch (error) {
+        console.error("Error issuing certificate:", error);
+        return { success: false, error: "Error issuing certificate" };
+    }
+} */
