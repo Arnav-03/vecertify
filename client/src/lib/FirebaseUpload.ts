@@ -1,9 +1,9 @@
-// Firebase upload function (already provided)
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from 'firebase/storage';
 import { toast } from 'sonner';
 import { app } from './FirebaseConfig';
+import { FirebaseError } from 'firebase/app'; // Import the FirebaseError type
 
-export const uploadPhoto = async (file: File,rollno:string,certificateID:string) => {
+export const uploadPhoto = async (file: File, rollno: string, certificateID: string): Promise<string> => {
     const storage = getStorage(app);
     const fileName = `${certificateID}-${rollno}--${Date.now()}.pdf`; 
     const metadata = { contentType: file.type }; 
@@ -19,7 +19,7 @@ export const uploadPhoto = async (file: File,rollno:string,certificateID:string)
                     const fileProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     console.log(`Upload is ${fileProgress}% done`);
                 },
-                (error: any) => {
+                (error: FirebaseError) => { // Use FirebaseError type here
                     toast.error('Upload failed');
                     reject(error);
                 },

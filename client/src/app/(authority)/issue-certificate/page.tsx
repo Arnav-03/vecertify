@@ -96,14 +96,14 @@ export default function IssueCertificate() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsSubmitting(true);
         try {
-            const downloadURL = await uploadPhoto(values.certificateFile,values.certificateId,values.studentRollNo);
+            const downloadURL = await uploadPhoto(values.certificateFile, values.certificateId, values.studentRollNo);
             console.log('File uploaded at:', downloadURL);
-/*             const result= await createIssuedCertificate(values,downloadURL);
- */            
-                console.log({ ...values, fileUrl: downloadURL });
-                toast.success("Certificate Issued");
-                form.reset();
-                setIsSubmitting(false);
+            /*             const result= await createIssuedCertificate(values,downloadURL);
+             */
+            console.log({ ...values, fileUrl: downloadURL });
+            toast.success("Certificate Issued");
+            form.reset();
+            setIsSubmitting(false);
 
         } catch (error) {
             console.error("Error issuing certificate:", error);
@@ -267,7 +267,7 @@ export default function IssueCertificate() {
                                     <FormField
                                         control={form.control}
                                         name="certificateFile"
-                                        render={({ field: { onChange, value, ...field } }) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Certificate PDF</FormLabel>
                                                 <FormControl>
@@ -277,9 +277,8 @@ export default function IssueCertificate() {
                                                             accept=".pdf"
                                                             onChange={(e) => {
                                                                 const file = e.target.files?.[0];
-                                                                onChange(file);
+                                                                field.onChange(file);
                                                             }}
-                                                            {...field}
                                                             className="cursor-pointer bg-accent"
                                                         />
                                                         <Upload className="h-4 w-4 text-muted-foreground" />
