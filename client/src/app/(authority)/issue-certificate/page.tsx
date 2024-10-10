@@ -55,7 +55,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const FormSkeleton = () => (
-    <div className="container mx-auto px-4 py-8 ">
+    <div className="container mx-auto px-4 py-8 mt-[75px]">
         <Card className="max-w-2xl mx-auto bg-background shadow-custom">
             <CardHeader>
                 <Skeleton className="h-8 w-48" />
@@ -288,7 +288,7 @@ export default function IssueCertificate() {
                                     <FormField
                                         control={form.control}
                                         name="certificateFile"
-                                        render={({ field: { onChange, value, ...field } }) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Certificate PDF</FormLabel>
                                                 <FormControl>
@@ -297,16 +297,18 @@ export default function IssueCertificate() {
                                                             <Input
                                                                 type="file"
                                                                 accept=".pdf"
-                                                                onChange={handleFileChange}
-                                                                {...field}
+                                                                onChange={(e) => {
+                                                                    field.onChange(e.target.files?.[0] || null);
+                                                                    handleFileChange(e);
+                                                                }}
                                                                 className="cursor-pointer"
-                                                                key={value ? 'file-selected' : 'no-file'}
+                                                                key={field.value ? 'file-selected' : 'no-file'}
                                                             />
                                                         </div>
-                                                        {(value || selectedFileName) && (
+                                                        {(field.value || selectedFileName) && (
                                                             <div className="flex items-center justify-between bg-accent p-2 rounded">
                                                                 <span className="text-sm truncate">
-                                                                    {selectedFileName || (value instanceof File ? value.name : '')}
+                                                                    {selectedFileName || (field.value instanceof File ? field.value.name : '')}
                                                                 </span>
                                                                 <Button
                                                                     type="button"
@@ -328,6 +330,7 @@ export default function IssueCertificate() {
                                             </FormItem>
                                         )}
                                     />
+
                                     <Alert className='bg-secondary'>
                                         <AlertCircle className="h-4 w-4" />
                                         <AlertTitle>Important</AlertTitle>
