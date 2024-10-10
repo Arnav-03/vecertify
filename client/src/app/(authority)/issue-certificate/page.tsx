@@ -150,7 +150,7 @@ export default function IssueCertificate() {
                 issuedBy: values.issuedBy,
                 certificateId: values.certificateId,
                 fileHash: values.fileHash, // Include the file hash
-            }, downloadURL)
+            }, downloadURL);
 
             if (result.success) {
                 console.log({ ...values, fileUrl: downloadURL });
