@@ -114,7 +114,7 @@ export default function IssueCertificate() {
                 issuedBy: values.issuedBy,
                 certificateId: values.certificateId,
             }, downloadURL);
-            
+
             if (result.success) {
                 console.log({ ...values, fileUrl: downloadURL });
                 toast.success("Certificate Issued");
@@ -268,11 +268,15 @@ export default function IssueCertificate() {
                                                                 }}
                                                                 {...field}
                                                                 className="cursor-pointer"
+                                                                // Using value to indicate if a file is selected
+                                                                key={value ? 'file-selected' : 'no-file'} // Force re-render when value changes
                                                             />
                                                         </div>
-                                                        {selectedFileName && (
+                                                        {(value || selectedFileName) && (
                                                             <div className="flex items-center justify-between bg-accent p-2 rounded">
-                                                                <span className="text-sm truncate">{selectedFileName}</span>
+                                                                <span className="text-sm truncate">
+                                                                    {selectedFileName || (value instanceof File ? value.name : '')}
+                                                                </span>
                                                                 <Button
                                                                     type="button"
                                                                     variant="ghost"
