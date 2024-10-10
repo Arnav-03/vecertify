@@ -41,6 +41,7 @@ const formSchema = z.object({
     courseName: z.string().min(1, {
         message: "Course name is required.",
     }),
+    fileHash: z.string().optional(),
     certificateFile: z
         .custom<File>()
         .refine((file) => file instanceof File, "Please upload a file.")
@@ -51,7 +52,6 @@ const formSchema = z.object({
         )
         .nullable(),
 })
-
 type FormValues = z.infer<typeof formSchema>;
 
 const FormSkeleton = () => (
@@ -89,6 +89,7 @@ export default function IssueCertificate() {
             issuedBy: "Dean",
             certificateId: "",
             certificateFile: null,
+            fileHash: "",
         },
     })
 
@@ -96,9 +97,44 @@ export default function IssueCertificate() {
         form.setValue('certificateFile', null);
         setSelectedFileName("");
     }
+    const generateFileHash = async (file: File) => {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        try {
+            const response = await fetch('/api/generate-hash', {
+                method: 'POST',
+                body: formData,
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to generate hash')
+            }
+
+            const data = await response.json()
+            return data.hash
+        } catch (error) {
+            console.error('Error generating hash:', error)
+            toast.error('Failed to generate file hash')
+            return null
+        }
+    }
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            form.setValue('certificateFile', file)
+            setSelectedFileName(file.name)
+
+            // Generate and set the file hash
+            const hash = await generateFileHash(file)
+            if (hash) {
+                form.setValue('fileHash', hash)
+            }
+        }
+    }
 
     async function onSubmit(values: FormValues) {
-        if (!values.certificateFile) {
+        if (!values.certificateFile || !values.fileHash) {
             toast.error("Please upload a certificate file.");
             return;
         }
@@ -113,7 +149,8 @@ export default function IssueCertificate() {
                 studentRollNo: values.studentRollNo,
                 issuedBy: values.issuedBy,
                 certificateId: values.certificateId,
-            }, downloadURL);
+                fileHash: values.fileHash, // Include the file hash
+            }, downloadURL)
 
             if (result.success) {
                 console.log({ ...values, fileUrl: downloadURL });
@@ -130,6 +167,7 @@ export default function IssueCertificate() {
             setIsSubmitting(false);
         }
     }
+
 
     return (
         <Layout>
@@ -259,17 +297,10 @@ export default function IssueCertificate() {
                                                             <Input
                                                                 type="file"
                                                                 accept=".pdf"
-                                                                onChange={(e) => {
-                                                                    const file = e.target.files?.[0];
-                                                                    if (file) {
-                                                                        onChange(file);
-                                                                        setSelectedFileName(file.name);
-                                                                    }
-                                                                }}
+                                                                onChange={handleFileChange}
                                                                 {...field}
                                                                 className="cursor-pointer"
-                                                                // Using value to indicate if a file is selected
-                                                                key={value ? 'file-selected' : 'no-file'} // Force re-render when value changes
+                                                                key={value ? 'file-selected' : 'no-file'}
                                                             />
                                                         </div>
                                                         {(value || selectedFileName) && (

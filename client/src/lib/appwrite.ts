@@ -247,6 +247,7 @@ export async function createAuthorityProfile(data: {
     studentRollNo:string;
     issuedBy: string;
     certificateId: string;
+    fileHash: string;
 }, fileUrl: string) {
     try {
         // Fetch logged-in user's details
@@ -291,6 +292,7 @@ export async function createAuthorityProfile(data: {
                 issueDate: data.issueDate,
                 issuerName: data.issuedBy,
                 certificateUrl: fileUrl,
+                fileHash: data.fileHash,
                 issuerOrg: name,
             }
         );
