@@ -4,7 +4,6 @@ import {
     Award,
     Download,
     ExternalLink,
-    Filter,
     Search,
     Share2,
     CheckCircle

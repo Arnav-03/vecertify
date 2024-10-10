@@ -1,16 +1,13 @@
 "use client"
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { GraduationCap, Mail, Award, Search, BookOpen, Clock, Download, MoreHorizontal, ExternalLink } from 'lucide-react';
+import { GraduationCap, Mail, Award, Search, BookOpen, Clock, Download, ExternalLink } from 'lucide-react';
 import { useUser } from '@/hooks/useUser';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useRouter } from 'next/navigation';
 
 export default function StudentDashboard() {
   const { user, loading } = useUser();
-  const router = useRouter();
 
   if (loading) {
     return (
