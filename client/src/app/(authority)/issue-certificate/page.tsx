@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -21,19 +21,18 @@ import NotAuthorized from '@/components/NotAuthorized'
 import { useUser } from '@/hooks/useUser'
 import { uploadPhoto } from '@/lib/FirebaseUpload'
 import { createIssuedCertificate } from '@/lib/appwrite'
+import useDocumentVerificationStore from '@/lib/store/useDocumentVerificationStore'
+import { ethers } from 'ethers'
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_FILE_TYPES = ["application/pdf"];
 
 const formSchema = z.object({
-    studentRollNo: z.string().min(1, {
-        message: "Student Roll No is required.",
+    studentMetaMask: z.string().min(1, {
+        message: "Student Meta Mask Address is required.",
     }),
     issueDate: z.date({
         required_error: "Issue date is required.",
-    }),
-    issuedBy: z.enum(["Dean", "Professor", "HOD", "Registrar"], {
-        required_error: "Issuer role is required.",
     }),
     certificateId: z.string().min(1, {
         message: "Certificate ID is required.",
@@ -76,22 +75,36 @@ const FormSkeleton = () => (
 )
 
 export default function IssueCertificate() {
-    const { user, loading } = useUser();
+    const { user, loading , metaMask} = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedFileName, setSelectedFileName] = useState<string>("")
-
+    const { initContract, issueDocument } = useDocumentVerificationStore();
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             courseName: "",
             issueDate: new Date(),
-            studentRollNo: "",
-            issuedBy: "Dean",
+            studentMetaMask: "",
             certificateId: "",
             certificateFile: null,
             fileHash: "",
         },
     })
+    useEffect(() => {
+        // Initialize the contract when the component mounts
+        async function setupContract() {
+          try {
+            const provider = new ethers.BrowserProvider(
+                window.ethereum as unknown as ethers.Eip1193Provider
+            );
+            await initContract(provider);
+            console.error('Contract initialization done !');
+          } catch (error) {
+            console.error('Contract initialization failed', error);
+          }
+        }
+        setupContract();
+      }, []);
 
     const handleClearFile = () => {
         form.setValue('certificateFile', null);
@@ -141,25 +154,38 @@ export default function IssueCertificate() {
 
         setIsSubmitting(true);
         try {
-            const downloadURL = await uploadPhoto(values.certificateFile, values.certificateId, values.studentRollNo);
+            const downloadURL = await uploadPhoto(values.certificateFile, values.certificateId, values.studentMetaMask);
             console.log('File uploaded at:', downloadURL);
-            const result = await createIssuedCertificate({
-                courseName: values.courseName,
-                issueDate: values.issueDate.toLocaleDateString('en-CA'),
-                studentRollNo: values.studentRollNo,
-                issuedBy: values.issuedBy,
-                certificateId: values.certificateId,
-                fileHash: values.fileHash, // Include the file hash
-            }, downloadURL);
-
-            if (result.success) {
-                console.log({ ...values, fileUrl: downloadURL });
-                toast.success("Certificate Issued");
-                form.reset();
-                setSelectedFileName("");
-            } else {
-                toast.error("Failed to issue certificate");
-            }
+            const issuerMetaMask=metaMask;
+            try {
+                await issueDocument(
+                    values.studentMetaMask, // student address
+                    values.fileHash, // unique document hash
+                    values.certificateId, // document type
+                    issuerMetaMask // additional metadata
+                );
+                toast.success('Document issued on blockchain successfully');
+                const result = await createIssuedCertificate({
+                    courseName: values.courseName,
+                    issueDate: values.issueDate.toLocaleDateString('en-CA'),
+                    studentMetaMask: values.studentMetaMask,
+                    certificateId: values.certificateId,
+                    fileHash: values.fileHash, // Include the file hash
+                    issuerMetaMask: issuerMetaMask
+                }, downloadURL);
+    
+                if (result.success) {
+                    console.log({ ...values, fileUrl: downloadURL });
+/*                     toast.success("Certificate Issued");
+ */                    form.reset();
+                    setSelectedFileName("");
+                } else {
+/*                     toast.error("Failed to issue certificate");
+ */                }
+              } catch (error) {
+                toast.error('Failed to issue document on blockchain');
+              }
+           
         } catch (error) {
             console.error("Error issuing certificate:", error);
             toast.error("Failed to issue certificate");
@@ -200,10 +226,10 @@ export default function IssueCertificate() {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="studentRollNo"
+                                        name="studentMetaMask"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Student Roll No</FormLabel>
+                                                <FormLabel>Student Meta Mask Address</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="Enter student roll number" {...field} />
                                                 </FormControl>
@@ -258,29 +284,6 @@ export default function IssueCertificate() {
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="issuedBy"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Issued By</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select issuer" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="Dean">Dean</SelectItem>
-                                                        <SelectItem value="HOD">Head of Department</SelectItem>
-                                                        <SelectItem value="Professor">Professor</SelectItem>
-                                                        <SelectItem value="Registrar">Registrar</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}

@@ -1,16 +1,16 @@
-"use client"
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { User, Briefcase, GraduationCap, Building2 } from 'lucide-react';
-import SignupLeftPanel from '@/components/ui/LeftHero';
-import Layout from '@/components/layout/Layout';
-import { signUpWithEmail } from '@/lib/appwrite';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+"use client";
+import React, { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { User, Briefcase, GraduationCap, Building2 } from "lucide-react";
+import SignupLeftPanel from "@/components/ui/LeftHero";
+import Layout from "@/components/layout/Layout";
+import { signUpWithEmail } from "@/lib/appwrite";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -19,45 +19,91 @@ export default function SignupForm() {
     email: '',
     password: '',
     role: '',
+    metamaskAddress: '', // Initialize as an empty string
   });
+  
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } }
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const fetchMetaMaskAddress = async () => {
+    if (typeof window.ethereum !== "undefined" && window.ethereum.request) {
+      try {
+        const accounts = (await window.ethereum.request({
+          method: "eth_requestAccounts",
+        })) as string[];
+  
+        if (accounts && accounts.length > 0) {
+          console.log(accounts);
+          return accounts[0]; // Return the first account
+        } else {
+          toast.error("No accounts found in MetaMask");
+          return ""; // Return an empty string as fallback
+        }
+      } catch (error) {
+        console.error("MetaMask connection error:", error);
+        toast.error("Failed to connect to MetaMask. Please try again.");
+        return ""; // Return an empty string as fallback
+      }
+    } else {
+      toast.error("MetaMask is not installed or enabled. Please install it to proceed.");
+      return ""; // Return an empty string as fallback
+    }
+  };
+  
+  const handleMetaMaskConnect = async () => {
+    const address = await fetchMetaMaskAddress();
+    setFormData(prev => ({
+      ...prev,
+      metamaskAddress: address, // Ensure it's always a string
+    }));
+  };
+  
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     try {
-      const result = await signUpWithEmail(formData);
+      // Fetch MetaMask address
+      const metamaskAddress = await fetchMetaMaskAddress();
+      if(metamaskAddress.length===0){
+        
+        return;
+      }
+      setFormData((prev) => ({ ...prev, metamaskAddress }));
+
+      // Include MetaMask address in the signup request
+      const result = await signUpWithEmail({ ...formData, metamaskAddress });
 
       if (result.success && result.otpSent) {
         // Redirect to OTP verification page with userId
         router.push(`/email-verify?userId=${result.userId}&role=${formData.role}`);
-    } else {
+      } else {
         throw new Error(result.error || "Failed to create account");
-    }
+      }
     } catch (error) {
       console.error("Signup error:", error);
       toast.error("Error creating account", {
-        description: "Please check your information and try again. If the problem persists, contact support.",
+        description:
+          "Please check your information and try again. If the problem persists, contact support.",
       });
     }
   };
 
-
   return (
     <Layout>
-      <div className="flex min-h-[100dvh] screen mt-[75px]  ">
-        <div className="hidden md:flex w-full items-center justify-center   flex-col bg-primary"><SignupLeftPanel /></div>
+      <div className="flex min-h-[100dvh] screen mt-[75px]">
+        <div className="hidden md:flex w-full items-center justify-center flex-col bg-primary">
+          <SignupLeftPanel />
+        </div>
         <div className="flex flex-col w-full mt-[-50px] p-4 items-center justify-center">
-          <Card className="w-full max-w-md bg-background shadow-custom " >
+          <Card className="w-full max-w-md bg-background shadow-custom">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-6 w-6" />
@@ -111,7 +157,9 @@ export default function SignupForm() {
                   <RadioGroup
                     name="role"
                     value={formData.role}
-                    onValueChange={(value) => handleInputChange({ target: { name: 'role', value } })}
+                    onValueChange={(value) =>
+                      handleInputChange({ target: { name: "role", value } })
+                    }
                     className="flex flex-col space-y-2"
                   >
                     <div className="flex items-center space-x-2">

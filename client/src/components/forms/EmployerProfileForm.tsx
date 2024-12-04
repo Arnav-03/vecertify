@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { toast } from "sonner"
+import { createEmployeeProfile } from "@/lib/appwrite"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   companyName: z.string().min(2, {
@@ -27,6 +29,7 @@ const formSchema = z.object({
 })
 
 export default function EmployerProfileForm() {
+  const navigate=useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,9 +41,19 @@ export default function EmployerProfileForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    toast.success("Employer profile completed successfully")
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const result = await createEmployeeProfile(values); 
+      if (result.success) {
+        toast.success("Profile completed successfully");
+        navigate.push('/dashboard');
+      } else {
+        toast.error(result.error || "Failed to complete profile");
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+   
   }
 
   return (

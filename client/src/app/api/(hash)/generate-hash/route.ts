@@ -18,9 +18,13 @@ export async function POST(request: NextRequest) {
         
         const hash = crypto.createHash('sha256')
         hash.update(buffer)
-        const fileHash = hash.digest('hex')
-        console.log(fileHash);
-        return NextResponse.json({ hash: fileHash })
+        const fileHash = hash.digest('hex')  // 64-character hex string
+        
+        // Ensure the hash is 32 bytes (256 bits)
+        const truncatedHash = fileHash.slice(0, 31); // You can directly return 64 characters if desired
+
+        console.log(truncatedHash);
+        return NextResponse.json({ hash: truncatedHash })
     } catch (error) {
         console.error('Error generating file hash:', error)
         return NextResponse.json(

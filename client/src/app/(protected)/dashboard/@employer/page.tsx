@@ -1,14 +1,15 @@
 "use client"
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Briefcase, Mail, Users, Building2, Award, ChartBar } from 'lucide-react';
+import { Briefcase, Mail, Users, Building2, Award, ChartBar, CirclePlus } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useUser } from '@/hooks/useUser';
+import { useRouter } from 'next/navigation';
 
 export default function EmployerDashboard() {
   const { user, loading } = useUser();
-
+  const navigate=useRouter();
   if (loading) {
     return (
       <Layout>
@@ -81,6 +82,10 @@ export default function EmployerDashboard() {
           </div>
         </div>
 
+        <div className="w-full flex justify-end my-8">
+          <div onClick={()=>navigate.push('/verify-document')} className="bg-primary/50 px-4 py-3 text-xl rounded-md flex gap-2 items-center hover:bg-primary/30 cursor-pointer  ">
+          <CirclePlus className='h-8 w-8' />Verify Document</div>
+        </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
           {stats.map((stat, index) => (
             <Card key={index}>
