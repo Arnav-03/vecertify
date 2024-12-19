@@ -18,10 +18,9 @@ export async function POST(request: NextRequest) {
         
         const hash = crypto.createHash('sha256')
         hash.update(buffer)
-        const fileHash = hash.digest('hex')  // 64-character hex string
+        const fileHash = hash.digest('hex') 
         
-        // Ensure the hash is 32 bytes (256 bits)
-        const truncatedHash = fileHash.slice(0, 31); // You can directly return 64 characters if desired
+        const truncatedHash = fileHash.slice(0, 31); 
 
         console.log(truncatedHash);
         return NextResponse.json({ hash: truncatedHash })

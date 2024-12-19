@@ -587,3 +587,79 @@ export async function getCertificateByHash(
     };
   }
 }
+
+export async function createVerifiedCertificate(
+  data: {
+    by:string;
+    name: string;
+    verifyDate: string;
+    status: string;
+  },
+) {
+  try {
+    // Fetch logged-in user's details
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) {
+      return { success: false, error: "User not logged in" };
+    }
+
+    const { email } = loggedInUser;
+
+    // Initialize Appwrite client
+    const { account } = await createAdminClient();
+    const databases = new Databases(account.client);
+
+
+    // Create the issued certificate document
+    const response = await databases.createDocument(
+      process.env.APPWRITE_DATABASE_ID!,
+      process.env.VERIFIED_CERTIFICATE_COLLECTION_ID!,
+      ID.unique(),
+      {  
+        name: data.name,
+        verifyDate: data.verifyDate,
+        status: data.status,
+        by:email,
+      }
+    );
+
+    return { success: true, response };
+  } catch (error) {
+    console.error("Error issuing certificate:", error);
+    return { success: false, error: "Error issuing certificate" };
+  }
+}
+export async function getVerifiedCertificatesByEmployerEmail(
+  email: string
+)
+ {
+  try {
+    const { databases } = await createAdminClient();
+
+    const certificateResponse = await databases.listDocuments(
+      process.env.APPWRITE_DATABASE_ID!,
+      process.env.VERIFIED_CERTIFICATE_COLLECTION_ID!,
+      [Query.equal("by", email)]
+    );
+
+    // Check if a certificate with the hash exists
+    if (certificateResponse.documents.length > 0) {
+      const doc = certificateResponse.documents;
+      return {
+        success: true,
+        response: doc,
+      };
+    } else {
+      return {
+        success: false,
+        error: "No certificate found with this email",
+      };
+    }
+  } catch (error) {
+    console.error("Error retrieving certificate:", error);
+    return {
+      success: false,
+      error: "Error searching for certificate",
+    };
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Menu, X, FileBadge, CircleUserRound, LayoutDashboard, LogOut, FolderKanban } from 'lucide-react';
+import { Menu, X, FileBadge, CircleUserRound, LayoutDashboard, LogOut, FolderKanban, Verified } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../ui/ModeToggle";
 import { usePathname } from 'next/navigation';
@@ -34,10 +34,11 @@ const NavbarLogin: React.FC<NavbarLoginProps> = ({ userRole }) => {
     [UserRole.AUTHORITY]: [
       { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard /> },
       { name: 'Issue Certificate', href: '/issue-certificate', icon: <FileBadge /> },
-      { name: 'Manage Certificates', href: '/manage-certificates', icon: <FolderKanban /> },
+      { name: 'Profile', href: '/profile', icon: <CircleUserRound /> },
     ],
     [UserRole.EMPLOYER]: [
       { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard /> },
+      { name: 'Verify', href: '/verify-document', icon: <Verified /> },
       { name: 'Applications', href: '/applications', icon: <FileBadge /> },
       { name: 'Profile', href: '/profile', icon: <CircleUserRound /> },
     ],

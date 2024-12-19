@@ -32,7 +32,7 @@ import { getCertificateByHash } from "@/lib/appwrite";
 
 // Updated interface to include more detailed certificate information
 interface DetailedCertificate {
-  documentHash: string;
+  documentHash: string ;
   documentType: string;
   issuedDate: number;
   documentMetadata: string;

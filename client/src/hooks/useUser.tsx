@@ -43,5 +43,5 @@ export const useUser = () => {
     fetchUser();
   }, [pathname]); // Re-run the effect when pathname changes
 
-  return { user, loading, metaMask };
+  return { user, loading, metaMask,setUser };
 };

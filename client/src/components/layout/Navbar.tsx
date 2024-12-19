@@ -108,7 +108,7 @@ const Navbar = () => {
                 {item.name}
               </NavLink>
             ))}
-            <div className="flex-grow" /> {/* This pushes the content to the top */}
+            <div className="flex-grow" /> 
           </div>
         </div>
       </nav>
